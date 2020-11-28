@@ -1,0 +1,15 @@
+<script>
+	
+	Numeros = [1,10,3,7,2];
+
+	//Função que recebe um número qualquer, adiciona esse número a um array, e ordena esse array em ordem crescente.
+	function AdicionaNumeroOrdenando(numero) {
+		Numeros.push(numero);
+		Numeros.sort((a,b) => { return (a - b) });
+	}
+
+	AdicionaNumeroOrdenando(11);
+
+	alert(Numeros);
+
+</script>

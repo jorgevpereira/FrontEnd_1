@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8"/>
+		<title>Estacionamento</title>
+		<style type="text/css">
+			form {
+				margin: 0 auto;
+				width: 400px;
+				padding: 1em;
+				border: 1px solid #CCC;
+				border-radius: 1em;
+			}
+			form div + div {
+				margin-top: 1em;
+			}
+			label {
+			    display: inline-block;
+    			width: 190px;
+    			text-align: right;
+    		}    		
+    		input:focus {
+    		    border-color: #000;
+    		}
+    		.button {    
+    			padding-left: 90px;
+			}
+			button {
+    			margin-left: .5em;
+			}
+		</style>
+	</head>
+	<body>
+		<form name="fEstacionamento">
+			<div>
+				<label for="entrada">Horário de Entrada:</label>
+				<input type="text" id="entrada" placeholder="HH:MM" autofocus="true">
+			</div>			
+			<div>
+				<label for="saida">Horário de Saída:</label>
+				<input type="text" id="saida" placeholder="HH:MM">
+			</div>			
+			<div class="button">
+        		<button type="button" onclick="onRealizarCalculo();">Calcular o custo</button>
+        		<input type="text" id="retorno">
+    		</div>    		
+		</form>	
+	</body>	
+	<script type="text/javascript">
+
+		function onRealizarCalculo() {
+
+			entrada = document.getElementById('entrada').value;
+			saida = document.getElementById('saida').value;
+
+			document.getElementById('retorno').value = CalculoCustoEstacionamento(entrada, saida);
+		}
+		
+		function ValidarHorario(valorHorario, horario) {
+			valido = false;
+			if (valorHorario) {
+				arrHorario = valorHorario.split(':');				
+				if (arrHorario.length >= 2) {
+
+					if (!horario)
+						horario = { horas: 0, minutos: 0};
+
+					horario.horas = parseInt(arrHorario[0]);
+					horario.minutos = parseInt(arrHorario[1]);
+
+					if (!isNaN(horario.horas))
+						valido = horario.horas >= 0 && horario.horas <= 23;
+
+					if (valido && !isNaN(horario.minutos))
+						valido = horario.minutos >= 0 && horario.minutos <= 59;
+				}
+			}
+			return valido;
+		}
+
+		function CalculoCustoEstacionamento(entrada, saida) {
+
+			//taxa de entrada, ou seja, entrou no estacionamento já custa 2
+			custoTotal = 2;
+			
+			if (!entrada)
+				entrada = '00:00';
+
+			if (!saida)
+				saida = '00:01';
+
+			horarioEntrada = {};
+			horarioSaida = {};
+
+			if (!ValidarHorario(entrada, horarioEntrada))
+				return 'Horário de entrada inválido.';
+
+			if (!ValidarHorario(saida, horarioSaida))
+				return 'Horário de saída inválido.';
+
+			var dataAtual = new Date();
+			var dataEntrada = new Date(dataAtual.getFullYear(), dataAtual.getMonth(), dataAtual.getDate(), horarioEntrada.horas, horarioEntrada.minutos, 0);
+			var dataSaida = new Date(dataAtual.getFullYear(), dataAtual.getMonth(), dataAtual.getDate(), horarioSaida.horas, horarioSaida.minutos, 0);
+
+			if (dataSaida < dataEntrada)
+				return 'Horário de saída não pode ser menor que o horário de entrada.';
+
+			//encontra a diferença entre as horas
+			diff = Math.abs(dataSaida.getTime() - dataEntrada.getTime());
+			//transforma o valor da diferença em horas
+			qtdeHoras = Math.ceil(diff / (1000 * 60 * 60) % 24);
+
+			//adiciona o custo da primeira hora, sendo completa ou não
+            custoTotal += 3;
+
+            if (qtdeHoras > 1)
+            	for (var i = 0; i < qtdeHoras-1; i++) {
+            		custoTotal += 4;
+            	}
+			
+			return custoTotal;
+		}
+
+
+	</script>
+</html>

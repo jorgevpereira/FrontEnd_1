@@ -1,0 +1,70 @@
+<style>
+	.box{
+		width: 50px;
+		height: 100px;
+		background-color: #f00;
+		display: inline-block;
+	}
+	.selected{
+		border: 3px solid #00f;
+	}
+</style>
+<body>
+	<div>Lista 1</div>
+	<ul data-listindex="0">
+		<li class="box selected"></li>
+		<li class="box"></li>
+		<li class="box"></li>
+		<li class="box"></li>
+	</ul>
+
+	<div>Lista 2</div>
+	<ul data-listindex="1">
+		<li class="box"></li>
+		<li class="box"></li>
+		<li class="box"></li>
+		<li class="box"></li>
+	</ul>	
+</body>
+<script>
+
+	document.onkeydown = function(e) {				
+		boxes = document.getElementsByClassName('box');		
+		if (boxes.length == 8) {
+			indiceSelecionado = 0;
+			for (let i = 0; i < boxes.length; i++) {
+				if (boxes[i].classList.length == 2) {					
+					indiceSelecionado = i;
+					break;
+				} 					
+			}					
+		}				
+		switch(e.keyCode) {		
+			case 37: //Seta esquerda
+				if (indiceSelecionado != 0 && indiceSelecionado != 4) {
+					boxes[indiceSelecionado].classList.remove('selected');
+					boxes[indiceSelecionado-1].classList.add('selected');
+				}
+				break;
+			case 38: //Seta acima
+				if (indiceSelecionado > 3) {
+					boxes[indiceSelecionado].classList.remove('selected');
+					boxes[indiceSelecionado-4].classList.add('selected');
+				}
+				break;
+			case 39: //Seta direita
+				if (indiceSelecionado != 3 && indiceSelecionado != 7) {
+					boxes[indiceSelecionado].classList.remove('selected');
+					boxes[indiceSelecionado+1].classList.add('selected');
+				}
+				break;
+			case 40: //Seta abaixo
+				if (indiceSelecionado < 4) {
+					boxes[indiceSelecionado].classList.remove('selected');
+					boxes[indiceSelecionado+4].classList.add('selected');
+				}
+				break;
+		}
+	}
+
+</script>
